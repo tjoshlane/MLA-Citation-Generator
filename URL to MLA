@@ -1,23 +1,37 @@
-import requests
-from bs4 import BeautifulSoup
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MLA Citation Generator</title>
+</head>
+<body>
+  <h1>MLA Citation Generator</h1>
+  <p>Paste a URL here to create an MLA citation:</p>
+  <input type="text" id="url" />
+  <button onclick="generateCitation()">Generate Citation</button>
+  <div id="citation"></div>
 
-def get_mla_citation(url):
-    # Make a request to the URL
-    response = requests.get(url)
+  <script>
+    function generateCitation() {
+      // Get the URL from the input field.
+      var url = document.getElementById("url").value;
 
-    # Parse the HTML response
-    soup = BeautifulSoup(response.content, 'html.parser')
+      // Make a request to the Python code.
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "https://github.com/bard/mla-citation-generator/blob/main/mla_citation.py?raw=true");
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          // Get the citation from the Python code.
+          var citation = xhr.responseText;
 
-    # Find the title of the page
-    title = soup.find('title').text
-
-    # Find the name of the website
-    website_name = soup.find('link', rel='canonical').get('href')
-
-    # Find the publication date of the page
-    publication_date = soup.find('meta', itemprop='datePublished').get('content')
-
-    # Create the MLA citation
-    citation = f'{title}. {website_name}. {publication_date}.'
-
-    return citation
+          // Set the citation in the output div.
+          document.getElementById("citation").innerHTML = citation;
+        } else {
+          // An error occurred.
+          document.getElementById("citation").innerHTML = "An error occurred.";
+        }
+      };
+      xhr.send();
+    }
+  </script>
+</body>
+</html>
