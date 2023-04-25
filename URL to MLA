@@ -1,0 +1,23 @@
+import requests
+from bs4 import BeautifulSoup
+
+def get_mla_citation(url):
+    # Make a request to the URL
+    response = requests.get(url)
+
+    # Parse the HTML response
+    soup = BeautifulSoup(response.content, 'html.parser')
+
+    # Find the title of the page
+    title = soup.find('title').text
+
+    # Find the name of the website
+    website_name = soup.find('link', rel='canonical').get('href')
+
+    # Find the publication date of the page
+    publication_date = soup.find('meta', itemprop='datePublished').get('content')
+
+    # Create the MLA citation
+    citation = f'{title}. {website_name}. {publication_date}.'
+
+    return citation
